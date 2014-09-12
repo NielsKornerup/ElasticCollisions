@@ -19,6 +19,7 @@ function initializeCharge() {
         charge.y = (Math.random() * (height-charge.radius))+charge.radius;
         charge.xSpeed = Math.random() * chargeSpeed;
         charge.ySpeed = Math.random() * chargeSpeed;
+	charge.coolDown = 0;
 	allParticles.push(charge);
     }
 }
@@ -32,8 +33,27 @@ var dist =Math.sqrt((Math.pow(difX,2)+Math.pow(difY,2)));
 var aAngle = 0;
 var bAngle = 0;
 var caAngle = 0;
+var difX2 = (allParticles[a].x-allParticles[b].x);
+var difY2 = (allParticles[a].y-allParticles[b].y);
+var dist2 =Math.sqrt((Math.pow(difX,2)+Math.pow(difY,2)));
 
-if(true||dist!=0&&dist<(allParticles[a].radius+allParticles[b].radius)){
+allParticles[a].newX=allParticles[a].x;
+allParticles[a].newY=allParticles[a].y;
+allParticles[a].coolDown--;
+allParticles[b].coolDown--;
+if(allParticles[a].coolDown<=0&&allParticles[b].coolDown<=0&&dist!=0&&dist<(allParticles[a].radius+allParticles[b].radius)){
+
+allParticles[a].coolDown = 6;
+allParticles[b].coolDown = 6;
+
+while(/*allParticles[a].radius<allParticles[b].radius&&*/dist2-1<(allParticles[a].radius+allParticles[b].radius)){
+	difX2 = (allParticles[a].newX-allParticles[b].x);
+	difY2 = (allParticles[a].newY-allParticles[b].y);
+	dist2 =Math.sqrt((Math.pow(difX2,2)+Math.pow(difY2,2)));
+	allParticles[a].newX=allParticles[a].newX-allParticles[a].xSpeed/100;
+	allParticles[a].newY=allParticles[a].newY-allParticles[a].ySpeed/100;
+}
+console.log("test");
 
 if(allParticles[a].xSpeed>0){
  aAngle = Math.atan(allParticles[a].xSpeed/allParticles[a].ySpeed);
@@ -59,12 +79,18 @@ var cbAngle = caAngle +Math.PI;
 var aSpeed = Math.pow(Math.pow(allParticles[a].xSpeed,2)+Math.pow(allParticles[a].ySpeed,2),.5);
 var bSpeed = Math.pow(Math.pow(allParticles[b].xSpeed,2)+Math.pow(allParticles[b].ySpeed,2),.5);
 
-allParticles[a].xSpeed=((aSpeed*Math.cos(aAngle-caAngle)*(allParticles[a].radius-allParticles[b].radius)+2*allParticles[b].radius*bSpeed*Math.cos(bAngle-caAngle))/(allParticles[a].radius+allParticles[b].radius))*Math.cos(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.cos(caAngle+Math.PI/2);
+allParticles[a].xSpeed=((aSpeed*Math.cos(aAngle-caAngle)*(Math.pow(allParticles[a].radius,2)-Math.pow(allParticles[b].radius,2))+2*Math.pow(allParticles[b].radius,2)*bSpeed*Math.cos(bAngle-caAngle))/(Math.pow(allParticles[a].radius,2)+Math.pow(allParticles[b].radius,2)))*Math.cos(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.cos(caAngle+Math.PI/2);
 
-allParticles[a].ySpeed=((aSpeed*Math.cos(aAngle-caAngle)*(allParticles[a].radius-allParticles[b].radius)+2*allParticles[b].radius*bSpeed*Math.cos(bAngle-caAngle))/(allParticles[a].radius+allParticles[b].radius))*Math.sin(caAngle)+aSpeed*Math.sin(aAngle - caAngle)*Math.sin(caAngle + Math.PI/2);
+allParticles[a].ySpeed=((aSpeed*Math.cos(aAngle-caAngle)*(Math.pow(allParticles[a].radius,2)-Math.pow(allParticles[b].radius,2))+2*Math.pow(allParticles[b].radius,2)*bSpeed*Math.cos(bAngle-caAngle))/(Math.pow(allParticles[a].radius,2)+Math.pow(allParticles[b].radius,2)))*Math.sin(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.sin(caAngle+Math.PI/2);
 }
 }
 }
+
+for (var a = 0; a < allParticles.length; a++) {
+	allParticles[a].x=allParticles[a].newX;
+	allParticles[a].y=allParticles[a].newY;
+}
+
 for (var x = 0; x < allParticles.length; x++) {
 if(allParticles[x].xSpeed>maxSpeed){
 allParticles[x].xSpeed=maxSpeed;
@@ -90,7 +116,7 @@ if(allParticles[x].y <= (allParticles[x].radius)){
 }
 
 function drawCharges() {
-    ctx.fillStyle = "rgba(255,255,255,.2)";
+    ctx.fillStyle = "rgba(255,255,255,.3)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (var i = 0; i < allParticles.length; i++) {
         charge = allParticles[i];
@@ -101,6 +127,11 @@ function drawCharges() {
         ctx.arc(charge.x /*- (charge.radius)*/, charge.y /*- (charge.radius)*/, charge.radius, 0, 2 * PI);
         ctx.fill();
         ctx.stroke();
+	ctx.beginPath();
+	ctx.moveTo(charge.x,charge.y);
+	ctx.lineTo(charge.x+(charge.xSpeed*charge.radius*charge.radius),charge.y+(charge.ySpeed*charge.radius*charge.radius));
+	ctx.fill();
+	ctx.stroke();
     }
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
