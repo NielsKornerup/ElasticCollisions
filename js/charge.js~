@@ -14,8 +14,7 @@ var maxDist =900;
 function initializeCharge() {
     for (var i = 0; i < numCharges; i++) {
         var charge = new Object();
-	//charge.radius = Math.random() * chargeMaxSize;
-	charge.radius=20;
+	charge.radius = Math.random() * chargeMaxSize;
 	charge.x = (Math.random() * (width-5))+5;
         charge.y = (Math.random() * (height-charge.radius))+charge.radius;
         charge.xSpeed = Math.random() * chargeSpeed;

@@ -6,7 +6,6 @@ var chargeSpeed = 2;
 var chargeMaxSize= 30;
 var numCharges = 2;
 var allParticles=[];
-var gravConstant = .1;
 var PI = 3.141592;
 var maxSpeed = 10;
 var maxDist =900;
@@ -143,7 +142,6 @@ initializeCharge();
 
 $("#controls-submit").click(function() {
 numCharges = $("#numparticles").val();
-gravConstant = $("#gravstr").val()/100;
 allParticles = [];
 initializeCharge();
 });
