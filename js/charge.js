@@ -15,17 +15,24 @@ function initializeCharge() {
     for (var i = 0; i < numCharges; i++) {
         var charge = new Object();
 	charge.radius = Math.random() * chargeMaxSize;
-        charge.x = (Math.random() * (width-5))+5;
+	charge.x = (Math.random() * (width-5))+5;
         charge.y = (Math.random() * (height-charge.radius))+charge.radius;
         charge.xSpeed = Math.random() * chargeSpeed;
         charge.ySpeed = Math.random() * chargeSpeed;
-	charge.coolDown = 0;
+	charge.mass = charge.radius*charge.radius;
+	charge.cooldown = 0;
+	charge.newXSpeed=charge.xSpeed;
+	charge.newYSpeed=charge.ySpeed;
 	allParticles.push(charge);
     }
 }
 
 function moveCharges(){
 for (var a = 0; a < allParticles.length; a++) {
+allParticles[a].newYSpeed=allParticles[a].ySpeed;
+allParticles[a].newXSpeed=allParticles[a].xSpeed;
+allParticles[a].newX=allParticles[a].x;
+allParticles[a].newY=allParticles[a].y;
 for (var b = 0; b < allParticles.length; b++) {
 var difX = (allParticles[a].x-allParticles[b].x);
 var difY = (allParticles[a].y-allParticles[b].y);
@@ -37,51 +44,46 @@ var difX2 = (allParticles[a].x-allParticles[b].x);
 var difY2 = (allParticles[a].y-allParticles[b].y);
 var dist2 =Math.sqrt((Math.pow(difX,2)+Math.pow(difY,2)));
 
-allParticles[a].newX=allParticles[a].x;
-allParticles[a].newY=allParticles[a].y;
-allParticles[a].coolDown--;
-allParticles[b].coolDown--;
-if(allParticles[a].coolDown<=0&&allParticles[b].coolDown<=0&&dist!=0&&dist<(allParticles[a].radius+allParticles[b].radius)){
 
-allParticles[a].coolDown = 6;
-allParticles[b].coolDown = 6;
+allParticles[a].cooldown--;
 
-while(/*allParticles[a].radius<allParticles[b].radius&&*/dist2-1<(allParticles[a].radius+allParticles[b].radius)){
+
+if(dist!=0&&dist<=(allParticles[a].radius+allParticles[b].radius)/*&&allParticles[a].cooldown<=0&&allParticles[b].cooldown<=0*/){
+
+if(a>b){
+allParticles[a].cooldown = 0;
+allParticles[b].cooldown = 0;
+}
+
+var aSpeed = Math.sqrt(Math.pow(allParticles[a].xSpeed,2)+Math.pow(allParticles[a].ySpeed,2));
+var bSpeed = Math.sqrt(Math.pow(allParticles[b].xSpeed,2)+Math.pow(allParticles[b].ySpeed,2));
+
+while(bSpeed<=aSpeed&&/*allParticles[a].radius<=allParticles[b].radius&&*/dist2<(allParticles[a].radius+allParticles[b].radius)){
 	difX2 = (allParticles[a].newX-allParticles[b].x);
 	difY2 = (allParticles[a].newY-allParticles[b].y);
 	dist2 =Math.sqrt((Math.pow(difX2,2)+Math.pow(difY2,2)));
 	allParticles[a].newX=allParticles[a].newX-allParticles[a].xSpeed/10;
 	allParticles[a].newY=allParticles[a].newY-allParticles[a].ySpeed/10;
 }
-console.log("test");
 
-if(allParticles[a].xSpeed>0){
- aAngle = Math.atan(allParticles[a].xSpeed/allParticles[a].ySpeed);
-}
-else{
- aAngle = Math.atan(allParticles[a].xSpeed/allParticles[a].ySpeed)+Math.PI;
-}
 
-if(allParticles[b].xSpeed>0){
- bAngle = Math.atan(allParticles[b].xSpeed/allParticles[b].ySpeed);
-}
-else{
- bAngle = Math.atan(allParticles[b].xSpeed/allParticles[b].ySpeed)+Math.PI;
-}
+ aAngle = Math.atan2(allParticles[a].ySpeed,allParticles[a].xSpeed);
 
-if(difX>0){
- caAngle = Math.atan(difX/difY);
-}
-else{
- caAngle = Math.atan(difX/difY)+Math.PI;
-}
-var cbAngle = caAngle +Math.PI;
-var aSpeed = Math.pow(Math.pow(allParticles[a].xSpeed,2)+Math.pow(allParticles[a].ySpeed,2),.5);
-var bSpeed = Math.pow(Math.pow(allParticles[b].xSpeed,2)+Math.pow(allParticles[b].ySpeed,2),.5);
+ bAngle = Math.atan2(allParticles[b].ySpeed,allParticles[b].xSpeed);
 
-allParticles[a].xSpeed=((aSpeed*Math.cos(aAngle-caAngle)*(Math.pow(allParticles[a].radius,2)-Math.pow(allParticles[b].radius,2))+2*Math.pow(allParticles[b].radius,2)*bSpeed*Math.cos(bAngle-caAngle))/(Math.pow(allParticles[a].radius,2)+Math.pow(allParticles[b].radius,2)))*Math.cos(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.cos(caAngle+Math.PI/2);
+ caAngle = Math.atan2(difY,difX);
+caAngle += Math.PI/2;
+ 
+allParticles[a].newYSpeed=(((allParticles[a].ySpeed*(allParticles[a].mass-allParticles[b].mass))+(2*allParticles[b].mass*allParticles[b].ySpeed))/(allParticles[a].mass+allParticles[b].mass));
 
-allParticles[a].ySpeed=((aSpeed*Math.cos(aAngle-caAngle)*(Math.pow(allParticles[a].radius,2)-Math.pow(allParticles[b].radius,2))+2*Math.pow(allParticles[b].radius,2)*bSpeed*Math.cos(bAngle-caAngle))/(Math.pow(allParticles[a].radius,2)+Math.pow(allParticles[b].radius,2)))*Math.sin(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.sin(caAngle+Math.PI/2);
+allParticles[a].newXSpeed=(((allParticles[a].xSpeed*(allParticles[a].mass-allParticles[b].mass))+(2*allParticles[b].mass*allParticles[b].xSpeed))/(allParticles[a].mass+allParticles[b].mass));
+
+
+
+/*allParticles[a].newXSpeed=((aSpeed*Math.cos(aAngle-caAngle)*(allParticles[a].mass-allParticles[b].mass)+2*allParticles[b].mass*bSpeed*Math.cos(bAngle-caAngle))/(allParticles[a].mass+allParticles[b].mass))*Math.cos(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.cos(caAngle+Math.PI/2);
+
+allParticles[a].newYSpeed=((aSpeed*Math.cos(aAngle-caAngle)*(allParticles[a].mass-allParticles[b].mass)+2*allParticles[b].mass*bSpeed*Math.cos(bAngle-caAngle))/(allParticles[a].mass+allParticles[b].mass))*Math.sin(caAngle)+aSpeed*Math.sin(aAngle-caAngle)*Math.sin(caAngle+Math.PI/2);
+*/
 }
 }
 }
@@ -89,15 +91,17 @@ allParticles[a].ySpeed=((aSpeed*Math.cos(aAngle-caAngle)*(Math.pow(allParticles[
 for (var a = 0; a < allParticles.length; a++) {
 	allParticles[a].x=allParticles[a].newX;
 	allParticles[a].y=allParticles[a].newY;
+	allParticles[a].xSpeed=allParticles[a].newXSpeed;
+	allParticles[a].ySpeed=allParticles[a].newYSpeed;
 }
 
 for (var x = 0; x < allParticles.length; x++) {
-if(allParticles[x].xSpeed>maxSpeed){
+/*if(allParticles[x].xSpeed>maxSpeed){
 allParticles[x].xSpeed=maxSpeed;
 }
 if(allParticles[x].ySpeed>maxSpeed){
 allParticles[x].ySpeed=maxSpeed;
-}
+}*/
 allParticles[x].x+=allParticles[x].xSpeed;
 allParticles[x].y+=allParticles[x].ySpeed;
 if (allParticles[x].x >= canvas.width-(allParticles[x].radius/2)) {
@@ -129,7 +133,7 @@ function drawCharges() {
         ctx.stroke();
 	ctx.beginPath();
 	ctx.moveTo(charge.x,charge.y);
-	ctx.lineTo(charge.x+(charge.xSpeed*charge.radius*charge.radius),charge.y+(charge.ySpeed*charge.radius*charge.radius));
+	ctx.lineTo((charge.x+(charge.xSpeed*charge.radius*charge.radius/3)),(charge.y+(charge.ySpeed*charge.radius*charge.radius/3)));
 	ctx.fill();
 	ctx.stroke();
     }
