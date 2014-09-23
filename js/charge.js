@@ -9,6 +9,7 @@ var allParticles=[];
 var PI = 3.141592;
 var maxSpeed = 10;
 var maxDist =900;
+var vectors = false;
 
 function initializeCharge() {
     for (var i = 0; i < numCharges; i++) {
@@ -19,7 +20,6 @@ function initializeCharge() {
         charge.xSpeed = Math.random() * chargeSpeed;
         charge.ySpeed = Math.random() * chargeSpeed;
 	charge.mass = charge.radius*charge.radius;
-	charge.cooldown = 0;
 	charge.newXSpeed=charge.xSpeed;
 	charge.newYSpeed=charge.ySpeed;
 	allParticles.push(charge);
@@ -44,15 +44,10 @@ var difY2 = (allParticles[a].y-allParticles[b].y);
 var dist2 =Math.sqrt((Math.pow(difX,2)+Math.pow(difY,2)));
 
 
-allParticles[a].cooldown--;
 
 
 if(dist!=0&&dist<=(allParticles[a].radius+allParticles[b].radius)/*&&allParticles[a].cooldown<=0&&allParticles[b].cooldown<=0*/){
 
-if(a>b){
-allParticles[a].cooldown = 0;
-allParticles[b].cooldown = 0;
-}
 
 var aSpeed = Math.sqrt(Math.pow(allParticles[a].xSpeed,2)+Math.pow(allParticles[a].ySpeed,2));
 var bSpeed = Math.sqrt(Math.pow(allParticles[b].xSpeed,2)+Math.pow(allParticles[b].ySpeed,2));
@@ -119,7 +114,7 @@ if(allParticles[x].y <= (allParticles[x].radius)){
 }
 
 function drawCharges() {
-    ctx.fillStyle = "rgba(255,255,255,.3)";
+    ctx.fillStyle = "rgba(255,255,255,.5)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (var i = 0; i < allParticles.length; i++) {
         charge = allParticles[i];
@@ -130,11 +125,13 @@ function drawCharges() {
         ctx.arc(charge.x /*- (charge.radius)*/, charge.y /*- (charge.radius)*/, charge.radius, 0, 2 * PI);
         ctx.fill();
         ctx.stroke();
-	ctx.beginPath();
-	ctx.moveTo(charge.x,charge.y);
-	ctx.lineTo((charge.x+(charge.xSpeed*charge.radius*charge.radius/3)),(charge.y+(charge.ySpeed*charge.radius*charge.radius/3)));
-	ctx.fill();
-	ctx.stroke();
+	if(vectors){
+		ctx.beginPath();
+		ctx.moveTo(charge.x,charge.y);
+		ctx.lineTo((charge.x+(charge.xSpeed*charge.radius*charge.radius/3)),(charge.y+(charge.ySpeed*charge.radius*charge.radius/3)));
+		ctx.fill();
+		ctx.stroke();
+	}
     }
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
@@ -142,6 +139,7 @@ initializeCharge();
 
 $("#controls-submit").click(function() {
 numCharges = $("#numparticles").val();
+vectors = $("#vect").is(":checked");
 allParticles = [];
 initializeCharge();
 });
