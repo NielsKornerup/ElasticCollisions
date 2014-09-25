@@ -1,32 +1,32 @@
-var canvas = document.getElementById("charge-canvas");
+var canvas = document.getElementById("Collisions-canvas");
 var ctx = canvas.getContext("2d");
 var width = canvas.width;
 var height = canvas.height;
-var chargeSpeed = 2;
-var chargeMaxSize= 30;
-var numCharges = 2;
+var Speed = 2;
+var MaxSize= 30;
+var Num = 2;
 var allParticles=[];
 var PI = 3.141592;
 var maxSpeed = 10;
 var maxDist =900;
 var vectors = false;
 
-function initializeCharge() {
-    for (var i = 0; i < numCharges; i++) {
-        var charge = new Object();
-	charge.radius = Math.random() * chargeMaxSize;
-	charge.x = (Math.random() * (width-5))+5;
-        charge.y = (Math.random() * (height-charge.radius))+charge.radius;
-        charge.xSpeed = Math.random() * chargeSpeed;
-        charge.ySpeed = Math.random() * chargeSpeed;
-	charge.mass = charge.radius*charge.radius;
-	charge.newXSpeed=charge.xSpeed;
-	charge.newYSpeed=charge.ySpeed;
-	allParticles.push(charge);
+function initializeParticles() {
+    for (var i = 0; i < numParticles; i++) {
+        var particle = new Object();
+	particle.radius = Math.random() * MaxSize;
+	particle.x = (Math.random() * (width-5))+5;
+        particle.y = (Math.random() * (height-particle.radius))+particle.radius;
+        particle.xSpeed = Math.random() * maxSpeed;
+        particle.ySpeed = Math.random() * maxSpeed;
+	particle.mass = particle.radius*particle.radius;
+	particle.newXSpeed=particle.xSpeed;
+	particle.newYSpeed=particle.ySpeed;
+	allParticles.push(particle);
     }
 }
 
-function moveCharges(){
+function moveParticles(){
 for (var a = 0; a < allParticles.length; a++) {
 allParticles[a].newYSpeed=allParticles[a].ySpeed;
 allParticles[a].newXSpeed=allParticles[a].xSpeed;
@@ -113,40 +113,40 @@ if(allParticles[x].y <= (allParticles[x].radius)){
 }
 }
 
-function drawCharges() {
+function drawParticles() {
     ctx.fillStyle = "rgba(255,255,255,.5)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (var i = 0; i < allParticles.length; i++) {
-        charge = allParticles[i];
+        particle = allParticles[i];
         ctx.beginPath();
         var colorString = 'rgb(0,0,255)';
         //ctx.fillStyle = colorString;
         ctx.strokeStyle = colorString;
-        ctx.arc(charge.x /*- (charge.radius)*/, charge.y /*- (charge.radius)*/, charge.radius, 0, 2 * PI);
+        ctx.arc(particle.x /*- (charge.radius)*/, particle.y /*- (charge.radius)*/, particle.radius, 0, 2 * PI);
         ctx.fill();
         ctx.stroke();
 	if(vectors){
 		ctx.beginPath();
-		ctx.moveTo(charge.x,charge.y);
-		ctx.lineTo((charge.x+(charge.xSpeed*charge.radius*charge.radius/3)),(charge.y+(charge.ySpeed*charge.radius*charge.radius/3)));
+		ctx.moveTo(particle.x,particle.y);
+		ctx.lineTo((particle.x+(particle.xSpeed*particle.radius*particle.radius/3)),(particle.y+(particle.ySpeed*particle.radius*particle.radius/3)));
 		ctx.fill();
 		ctx.stroke();
 	}
     }
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-initializeCharge();
+initializeParticles();
 
 $("#controls-submit").click(function() {
-numCharges = $("#numparticles").val();
+Num = $("#numparticles").val();
 vectors = $("#vect").is(":checked");
 allParticles = [];
-initializeCharge();
+initializeParticles();
 });
 
 function main() {
-moveCharges();
-drawCharges();
+moveParticles();
+drawParticles();
 requestAnimationFrame(main);
 };
 requestAnimationFrame(main);
