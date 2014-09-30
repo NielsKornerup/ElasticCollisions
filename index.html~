@@ -3,7 +3,7 @@
 	<body>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<div class="col-md-6">
-			<canvas id="Collisions-canvas" width="650" height = "600" style="border:1px solid #000000;"></canvas>
+			<canvas id="Collision-canvas" width="650" height = "600" style="border:1px solid #000000;"></canvas>
 		</div>
 		 <div class="col-md-4">
 			<h1>Settings</h1>

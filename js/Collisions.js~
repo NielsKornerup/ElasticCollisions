@@ -114,7 +114,7 @@ if(allParticles[x].y <= (allParticles[x].radius)){
 }
 
 function drawParticles() {
-    ctx.fillStyle = "rgba(255,255,255,.5)";
+    ctx.fillStyle = "rgba(255,255,255,.2)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (var i = 0; i < allParticles.length; i++) {
         particle = allParticles[i];
@@ -126,7 +126,7 @@ function drawParticles() {
         ctx.fill();
         ctx.stroke();
 	if(vectors){
-		ctx.beginPath();
+		ctx.beginPath();-
 		ctx.moveTo(particle.x,particle.y);
 		ctx.lineTo((particle.x+(particle.xSpeed*particle.radius*particle.radius/3)),(particle.y+(particle.ySpeed*particle.radius*particle.radius/3)));
 		ctx.fill();

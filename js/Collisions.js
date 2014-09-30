@@ -12,7 +12,7 @@ var maxDist =900;
 var vectors = false;
 
 function initializeParticles() {
-    for (var i = 0; i < numParticles; i++) {
+    for (var i = 0; i < Num; i++) {
         var particle = new Object();
 	particle.radius = Math.random() * MaxSize;
 	particle.x = (Math.random() * (width-5))+5;
@@ -126,7 +126,7 @@ function drawParticles() {
         ctx.fill();
         ctx.stroke();
 	if(vectors){
-		ctx.beginPath();
+		ctx.beginPath();-
 		ctx.moveTo(particle.x,particle.y);
 		ctx.lineTo((particle.x+(particle.xSpeed*particle.radius*particle.radius/3)),(particle.y+(particle.ySpeed*particle.radius*particle.radius/3)));
 		ctx.fill();
