@@ -43,11 +43,7 @@ var difX2 = (allParticles[a].x-allParticles[b].x);
 var difY2 = (allParticles[a].y-allParticles[b].y);
 var dist2 =Math.sqrt((Math.pow(difX,2)+Math.pow(difY,2)));
 
-
-
-
 if(dist!=0&&dist<=(allParticles[a].radius+allParticles[b].radius)/*&&allParticles[a].cooldown<=0&&allParticles[b].cooldown<=0*/){
-
 
 var aSpeed = Math.sqrt(Math.pow(allParticles[a].xSpeed,2)+Math.pow(allParticles[a].ySpeed,2));
 var bSpeed = Math.sqrt(Math.pow(allParticles[b].xSpeed,2)+Math.pow(allParticles[b].ySpeed,2));
@@ -67,7 +63,7 @@ while(bSpeed<=aSpeed&&/*allParticles[a].radius<=allParticles[b].radius&&*/dist2<
 
  caAngle = Math.atan2(difY,difX);
 caAngle += Math.PI/2;
- 
+
 allParticles[a].newYSpeed=(((allParticles[a].ySpeed*(allParticles[a].mass-allParticles[b].mass))+(2*allParticles[b].mass*allParticles[b].ySpeed))/(allParticles[a].mass+allParticles[b].mass));
 
 allParticles[a].newXSpeed=(((allParticles[a].xSpeed*(allParticles[a].mass-allParticles[b].mass))+(2*allParticles[b].mass*allParticles[b].xSpeed))/(allParticles[a].mass+allParticles[b].mass));
