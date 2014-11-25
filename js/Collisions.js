@@ -12,6 +12,7 @@ var maxDist =900;
 var vectors = false;
 
 function initializeParticles() {
+	document.getElementById('numparticles').value=Num;
 	for (var i = 0; i < Num; i++) {
 		var particle = new Object();
 		particle.radius = Math.random() * MaxSize;
